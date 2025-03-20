@@ -62,10 +62,10 @@ while is_language_selected == False:
         
 
     
+# TODO implementare in fututo il modello gpt-4o-mini
 
 # Inizializzo la funzione in grado di generare un paragrafo nella lingua scelta su un determinato argomento sempre scelto dall'utente
 # La funzione accetta un argomento di tipo stringa e restituisce un paragrafo in italiano
-#TODO implementare in fututo il modello gpt-4o-mini
 def generate_blog(paragraph_topic):
     response = openai.completions.create(
         model = 'gpt-3.5-turbo-instruct',
