@@ -1,10 +1,11 @@
-import openai #Importo la libreria openai per integrare l'IA generativa
+from openai import OpenAI #Importo la libreria openai per integrare l'IA generativa
 import os #Importo la libreria os per utilizzare comandi da CLI direttamente nel codice
 from dotenv import dotenv_values #Importo la libreria dotenv per creare variabili d'ambiente
 
 config = dotenv_values(".env") #Dico alla liberia dotenv dove andare a prendere le variabili d'ambiente
 
-openai.api_key = config['API_KEY'] #Inizializzo la variabile d'ambiente API_KEY
+# Pass the api_key directly when creating the OpenAI client instance
+client = OpenAI(api_key=config.get('OPENAI_API_KEY')) #Inizializzo la variabile d'ambiente API_KEY
 
 # Inizializzo le variabili selected_language e is_language_selected per gestire la selezione della lingua
 selected_language = '' # Questa viene impostata a una stringa vuota per permettere al prompt di ricevere la lingua impostata dall'utente
@@ -61,20 +62,21 @@ while is_language_selected == False:
         language = int(input("\nSeleziona una lingua da quelle sopra inserendo il numero corrispondente\n")) # Evita il loop infinito
         
 
-    
-# TODO implementare in fututo il modello gpt-4o-mini
 
 # Inizializzo la funzione in grado di generare un paragrafo nella lingua scelta su un determinato argomento sempre scelto dall'utente
 # La funzione accetta un argomento di tipo stringa e restituisce un paragrafo in italiano
 def generate_blog(paragraph_topic):
-    response = openai.completions.create(
-        model = 'gpt-3.5-turbo-instruct',
-        prompt = f"Scrivi un paragrafo in {selected_language} riguardo l'argomento scelto dall'utente ovvero {paragraph_topic}",
-        max_tokens = 400,
-        temperature = 0.3, # La temperatura è impostata a 0.3 per poter ottenere risposte sempre diverse
+    response = client.chat.completions.create(
+        model = 'gpt-4o-mini',
+        messages = [
+            {
+                'role': 'user',
+                'content': f"Scrivi un paragrafo in {selected_language} riguardo l'argomento scelto dall'utente ovvero {paragraph_topic}"
+            }
+        ]
     )
 
-    retrieve_blog = response.choices[0].text
+    retrieve_blog = response.choices[0].message.content
 
     return retrieve_blog
 
