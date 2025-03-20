@@ -21,7 +21,7 @@ language = 0
 
 def select_a_language():
     global language
-    print("Benvenuto nel generatore di paragrafi per blog!\n")
+    print("Benvenuto nel generatore di onepage di Gabriel Marchegiani!\n")
     print("1) Italiano")
     print("2) Inglese")
     print("3) Tedesco")
@@ -72,32 +72,25 @@ def generate_blog(paragraph_topic):
         messages = [
             {
                 'role': 'user',
-                'content': f"Scrivi un paragrafo in {selected_language} riguardo l'argomento scelto dall'utente ovvero {paragraph_topic}"
+                'content': f" sei un eseperto di web design e un ottimo sviluppatore. Scrivi una pagina html e js in {selected_language} riguardo l'argomento scelto dall'utente ovvero {paragraph_topic}. Dovrai utilizzare tutti quanti i tag html necessari e dare anche delle classi utilizzando la cdn di tailwind all'interno di essi. Non deve essere una onepage come tutte le altre, deve avere qualcosa in più dal punto di vista grafico. Tassativo: scrivi solo il codice html senza ```html o altro e non mettere messaggi iniziali e finali. scrivi quanto più possibile e utilizza una grafica notevolemente avanzata."
             }
-        ]
+        ],
+        temperature = 0.3
+
     )
 
     retrieve_blog = response.choices[0].message.content
 
     #Aggiungo qui una funzione per creare un file di testo e inserire il paragrafo creato
-    save_on_file = open(f"{paragraph_topic}.txt", 'w')
+    save_on_file = open(f"{paragraph_topic}.html", 'w')
     save_on_file.write(retrieve_blog)
     save_on_file.close()
 
     return retrieve_blog
 
+# Prompt the user to input the topic for the blog paragraph
+paragraph_topic = input("Inserisci l'argomento della onepage che vuoi creare: ")
 
-keep_writing = True
-
-while keep_writing:
-    answer = input("Vuoi generare un paragrafo? S per si, N per no:)")
-    if answer == 'S' or answer == 's':
-        paragraph_topic = input("Inserisci l'argomento del paragrafo: ")
-        print(generate_blog(paragraph_topic))
-    elif answer == 'N' or answer == 'n':
-        print("\n Grazie per aver utilizzato il generatore di paragrafi!")
-        keep_writing = False
-    else:
-        print("Non hai inserito una risposta valida, riprova.")
-
+# Call the generate_blog function with the user-provided topic
+generate_blog(paragraph_topic)
 
