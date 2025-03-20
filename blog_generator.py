@@ -16,15 +16,21 @@ is_language_selected = False # Questa viene impostata a False per permettere al 
 os.system('cls' if os.name == 'nt' else 'clear')
 
 # Tutta questa parte rappresenta la schermata iniziale del programma presentando un titolo e la lista delle lingue da selezionare
-print("Benvenuto nel generatore di paragrafi per blog!\n")
 
-print("1) Italiano")
-print("2) Inglese")
-print("3) Tedesco")
-print("4) Francese")
-print("5) Spagnolo")
-language = int(input("\nSeleziona una lingua da quelle sopra inserendo il numero corrispondente\n")) # La variabile language si occupa di ricevere un numero corrispondente alla lingua e salvarlo
+language = 0
 
+def select_a_language():
+    global language
+    print("Benvenuto nel generatore di paragrafi per blog!\n")
+    print("1) Italiano")
+    print("2) Inglese")
+    print("3) Tedesco")
+    print("4) Francese")
+    print("5) Spagnolo")
+    language = int(input("\nSeleziona una lingua da quelle sopra inserendo il numero corrispondente\n")) # La variabile language si occupa di ricevere un numero corrispondente alla lingua e salvarlo
+    return language
+
+language = select_a_language()
 
 # In questo ciclo while imposto per ogni numero corrispondente ad una lingua un valore da passare poi l prompt
 while is_language_selected == False:
@@ -54,12 +60,7 @@ while is_language_selected == False:
         # Questa parte di codice serve anche per evitare che il ciclo while vada in loop infinito
         os.system('cls' if os.name == 'nt' else 'clear')
         print("Ops! Il valore selezionato non corrisponde a nessuna lingua! Riprova")
-        print("1) Italiano")
-        print("2) Inglese")
-        print("3) Tedesco")
-        print("4) Francese")
-        print("5) Spagnolo")
-        language = int(input("\nSeleziona una lingua da quelle sopra inserendo il numero corrispondente\n")) # Evita il loop infinito
+        select_a_language() # Evita il loop infinito
         
 
 
@@ -77,6 +78,11 @@ def generate_blog(paragraph_topic):
     )
 
     retrieve_blog = response.choices[0].message.content
+
+    #Aggiungo qui una funzione per creare un file di testo e inserire il paragrafo creato
+    save_on_file = open(f"{paragraph_topic}.txt", 'w')
+    save_on_file.write(retrieve_blog)
+    save_on_file.close()
 
     return retrieve_blog
 
