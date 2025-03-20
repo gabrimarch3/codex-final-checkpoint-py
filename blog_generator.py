@@ -1,14 +1,20 @@
-import openai
-import os
-from dotenv import dotenv_values
+import openai #Importo la libreria openai per integrare l'IA generativa
+import os #Importo la libreria os per utilizzare comandi da CLI direttamente nel codice
+from dotenv import dotenv_values #Importo la libreria dotenv per creare variabili d'ambiente
 
-config = dotenv_values(".env")
-openai.api_key = config['API_KEY']
+config = dotenv_values(".env") #Dico alla liberia dotenv dove andare a prendere le variabili d'ambiente
 
-selected_language = ''
-is_language_selected = False
+openai.api_key = config['API_KEY'] #Inizializzo la variabile d'ambiente API_KEY
 
+# Inizializzo le variabili selected_language e is_language_selected per gestire la selezione della lingua
+selected_language = '' # Questa viene impostata a una stringa vuota per permettere al prompt di ricevere la lingua impostata dall'utente
+is_language_selected = False # Questa viene impostata a False per permettere al ciclo while di partire
+
+# La riga qui sotto corrisponde al comando CLI 'clear'
+# Permette quindi di pulire il terminale quando il programma viene avviato
 os.system('cls' if os.name == 'nt' else 'clear')
+
+# Tutta questa parte rappresenta la schermata iniziale del programma presentando un titolo e la lista delle lingue da selezionare
 print("Benvenuto nel generatore di paragrafi per blog!\n")
 
 print("1) Italiano")
@@ -16,8 +22,10 @@ print("2) Inglese")
 print("3) Tedesco")
 print("4) Francese")
 print("5) Spagnolo")
-language = int(input("\nSeleziona una lingua da quelle sopra inserendo il numero corrispondente\n"))
+language = int(input("\nSeleziona una lingua da quelle sopra inserendo il numero corrispondente\n")) # La variabile language si occupa di ricevere un numero corrispondente alla lingua e salvarlo
 
+
+# In questo ciclo while imposto per ogni numero corrispondente ad una lingua un valore da passare poi l prompt
 while is_language_selected == False:
     if language == 1:
         selected_language = 'italiano'
@@ -40,6 +48,9 @@ while is_language_selected == False:
         print("Hai selezionato: Spagnolo")
         is_language_selected = True
     else:
+        # Qui viene riprodotta la schermata iniziale del programma con in aggiunta
+        # una riga che notifica all'utente che la selezione non è stata fatta correttamente.
+        # Questa parte di codice serve anche per evitare che il ciclo while vada in loop infinito
         os.system('cls' if os.name == 'nt' else 'clear')
         print("Ops! Il valore selezionato non corrisponde a nessuna lingua! Riprova")
         print("1) Italiano")
@@ -47,19 +58,20 @@ while is_language_selected == False:
         print("3) Tedesco")
         print("4) Francese")
         print("5) Spagnolo")
-        language = int(input("\nSeleziona una lingua da quelle sopra inserendo il numero corrispondente\n"))
+        language = int(input("\nSeleziona una lingua da quelle sopra inserendo il numero corrispondente\n")) # Evita il loop infinito
         
 
     
 
-# Inizializzo la funzione in grado di generare un paragrafo in italiano su un determinato argomento
+# Inizializzo la funzione in grado di generare un paragrafo nella lingua scelta su un determinato argomento sempre scelto dall'utente
 # La funzione accetta un argomento di tipo stringa e restituisce un paragrafo in italiano
+#TODO implementare in fututo il modello gpt-4o-mini
 def generate_blog(paragraph_topic):
     response = openai.completions.create(
         model = 'gpt-3.5-turbo-instruct',
         prompt = f"Scrivi un paragrafo in {selected_language} riguardo l'argomento scelto dall'utente ovvero {paragraph_topic}",
         max_tokens = 400,
-        temperature = 0.3,
+        temperature = 0.3, # La temperatura è impostata a 0.3 per poter ottenere risposte sempre diverse
     )
 
     retrieve_blog = response.choices[0].text
