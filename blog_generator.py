@@ -19,9 +19,15 @@ os.system('cls' if os.name == 'nt' else 'clear')
 
 language = 0
 
+# Questa parte gestisce l'output colorato nel terminale
+RED = '\033[91m'
+GREEN = '\033[92m'
+BLUE = '\033[94m'
+RESET = '\033[0m'
+
 def select_a_language():
     global language
-    print("Benvenuto nel generatore di onepage di Gabriel Marchegiani!\n")
+    print(f"{GREEN}Benvenuto nel generatore di onepage di Gabriel Marchegiani!{RESET}\n")
     print("1) Italiano")
     print("2) Inglese")
     print("3) Tedesco")
@@ -59,7 +65,7 @@ while is_language_selected == False:
         # una riga che notifica all'utente che la selezione non è stata fatta correttamente.
         # Questa parte di codice serve anche per evitare che il ciclo while vada in loop infinito
         os.system('cls' if os.name == 'nt' else 'clear')
-        print("Ops! Il valore selezionato non corrisponde a nessuna lingua! Riprova")
+        print(f"{RED}Ops! Il valore selezionato non corrisponde a nessuna lingua! Riprova{RESET}")
         select_a_language() # Evita il loop infinito
         
 
@@ -71,12 +77,60 @@ def generate_blog(paragraph_topic):
         model = 'gpt-4o-mini',
         messages = [
             {
+                'role': 'system',
+                'content': 'You are an expert web designer and developer specialized in creating stunning one-page websites with modern design principles.'
+            },
+            {
                 'role': 'user',
-                'content': f" sei un eseperto di web design e un ottimo sviluppatore. Scrivi una pagina html e js in {selected_language} riguardo l'argomento scelto dall'utente ovvero {paragraph_topic}. Dovrai utilizzare tutti quanti i tag html necessari e dare anche delle classi utilizzando la cdn di tailwind all'interno di essi. Non deve essere una onepage come tutte le altre, deve avere qualcosa in più dal punto di vista grafico. Tassativo: scrivi solo il codice html senza ```html o altro e non mettere messaggi iniziali e finali. scrivi quanto più possibile e utilizza una grafica notevolemente avanzata."
+                'content': f"""
+                            Crea una pagina onepage in {selected_language} sul tema: "{paragraph_topic}".
+                            
+                            REQUISITI TECNICI:
+                            - Utilizza HTML5 semantico (header, nav, main, section, footer)
+                            - Integra Tailwind CSS via CDN per lo styling
+                            - Includi FontAwesome o Google Material icons per icone moderne
+                            - Aggiungi animazioni fluide con CSS e JavaScript minimalista
+                            - Design completamente responsive e mobile-first
+                            - Palette colori armoniosa (max 3-4 colori principali)
+                            - Non deve sembrare creata da un IA
+                            - Assicurati che il codice sia ben strutturato e facile da mantenere
+                            - Includi meta tag per SEO e social media (Open Graph, Twitter Cards)
+                            - Assicurati che la pagina sia accessibile (rispetta le linee guida WCAG)
+                            - Non usare immagini o video
+                            
+                            STRUTTURA RICHIESTA:
+                            1. Hero section con gradienti dinamici o animati
+                            2. Navbar sticky con logo e links funzionanti
+                            3. 2-3 sezioni di contenuto con layout moderni e TANTO TESTO per ogni sezione (grid/flex)
+                               - Ogni sezione deve contenere almeno 300-400 parole di testo informativo
+                               - Il testo deve essere dettagliato, approfondito e ricco di informazioni sul tema
+                               - Usa sottotitoli, elenchi puntati e paragrafi ben strutturati
+                               - Assicurati di coprire diversi aspetti del tema richiesto
+                               - Il contenuto testuale deve sembrare scritto da un esperto del settore
+                            4. Componenti interattivi (es. slider, tabs, accordions, counters) che contengano ulteriore testo informativo
+                            6. Footer elegante con credits (one page creata dal tool python di Gabriel Marchegiani)
+                            
+                            STILE VISIVO:
+                            - Design pulito e minimalista, abbondante whitespace
+                            - Tipografia moderna e leggibile (max 2-3 font diversi)
+                            - Elementi UI con effetti hover raffinati
+                            - Animazioni al caricamento e allo scroll
+                            - Shadow e bordi sottili per creare profondità
+                            - Utilizza una griglia per mantenere l'allineamento e la coerenza
+                            - Assicurati che i colori e i font siano coerenti in tutta la pagina
+                            
+                            CONTENUTO TESTUALE:
+                            - Fornisci testo dettagliato e abbondante su ogni aspetto del tema
+                            - Assicurati che ogni paragrafo sia completo e ricco di contenuti (minimo 4-5 frasi per paragrafo)
+                            - Includi almeno 1000-1500 parole di testo totali nella pagina
+                            - Il testo deve essere strutturato in modo logico e ben organizzato
+                            - Usa un linguaggio professionale e appropriato per il tema
+                            
+                            IMPORTANTE: Scrivi SOLO codice HTML completo e funzionante, senza commenti introduttivi o conclusivi e senza marcatori html come '''html e così via
+                            """
             }
         ],
-        temperature = 0.3
-
+        temperature = 0.7
     )
 
     retrieve_blog = response.choices[0].message.content
@@ -84,6 +138,8 @@ def generate_blog(paragraph_topic):
     #Aggiungo qui una funzione per creare un file di testo e inserire il paragrafo creato
     save_on_file = open(f"{paragraph_topic}.html", 'w')
     save_on_file.write(retrieve_blog)
+    os.system('cls' if os.name == 'nt' else 'clear')
+    print(f"{GREEN} File generato con successo!{RESET}")
     save_on_file.close()
 
     return retrieve_blog
